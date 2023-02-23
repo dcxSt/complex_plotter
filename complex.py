@@ -58,8 +58,11 @@ def plot_func(f,z:np.ndarray,name:str):
     # Function Evaluation
     w=func(Z) # Evaluate function
     # Phase and amplitude
-    phase    =np.angle(w)
-    amplitude=np.abs(w)
+    phase =np.angle(w)
+    logamp=np.log10(np.abs(w)) # logarithm of the amplitude
+    cutoff=4 # cutoff amplitude range 10^-4 to 10^4
+    logamp=np.clip(logamp,a_min=-cutoff,a_max=cutoff) 
+
 
     # PLOT
     # ticks, locations and labels
@@ -73,17 +76,17 @@ def plot_func(f,z:np.ndarray,name:str):
     plt.colorbar(orientation='horizontal')
     plt.xticks(xticks)
     plt.yticks(yticks)
-    ### Plotting the amplitude
+    ### Plotting the log amplitude
     # pick a colormap, define level sets and a normalization
     cmap=plt.get_cmap('PuOr')
-    vmin=min(amplitude.flatten())
-    vmax=max(amplitude.flatten())
+    vmin=min(logamp.flatten())
+    vmax=max(logamp.flatten())
     levels=MaxNLocator(nbins=50).tick_values(vmin,vmax)
     norm=BoundaryNorm(levels,ncolors=cmap.N,clip=True)
     # Plot Amplitude
     plt.subplot(1,2,2)
-    plt.pcolormesh(X,Y,amplitude,cmap=cmap,shading="auto",norm=norm)
-    plt.title("Amplitude")
+    plt.pcolormesh(X,Y,logamp,cmap=cmap,shading="auto",norm=norm)
+    plt.title("Log10 Amplitude")
     cbar=plt.colorbar(orientation='horizontal')
     cbar.ax.set_xticklabels(cbar.ax.get_xticklabels(), rotation='-45')
 
